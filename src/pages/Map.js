@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, memo} from 'react'
 import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api';
 import Icon from "../assets/images/coronavirus.svg";
 import Api from "../Api";
@@ -23,9 +23,6 @@ function Map() {
     const maxSize = 200;
     const [data, setData] = useState([]);
     const [mapData, setMapData] = useState([])
-    const [minNumber, setMinNumber] = useState(0);
-    const [maxNumber, setMaxNumber] = useState();
-    const [minSize, setMinSize] = useState();
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: "AIzaSyBxUOCJq3gmitl1Pe6rRfjiWqzr_Wlj7ps"
@@ -50,15 +47,7 @@ function Map() {
         }))
     }, [data, query.search])
 
-    useEffect(() => {
-        const count = mapData.map(m => m.count)
-        setMaxNumber(Math.max(...count));
-        setMinNumber(Math.min(...count));
-    }, [mapData, query.search]);
 
-    useEffect(() => {
-        setMinSize(minNumber !== 0 ? 20 : 0);
-    }, [minNumber]);
     return (
         <div>
             <Header />
@@ -69,7 +58,11 @@ function Map() {
                     zoom={5}
                 >
                     {mapData.map(map => {
+                        const count = mapData.map(m => m.count)
+                        const maxNumber = Math.max(...count);
+                        const minNumber = Math.min(...count);
                         const percent = (map.count * 100) / maxNumber
+                        const minSize = minNumber !== 0 ? 20 : 0
                         let size;
                         if(maxNumber === map.count){
                             size = maxSize
@@ -78,24 +71,22 @@ function Map() {
                         }else{
                             size = percent * (maxSize - minSize) / 100
                         }
-                        if(size <= maxSize && size >= minSize){
-                            return (
-                                <Marker
-                                    key={map.state_code}
-                                    position={{
-                                        lat: +map.latitude,
-                                        lng: +map.longitude
-                                    }}
-                                    title={`${map.name} -  ${map.count}`}
-                                    icon={{
-                                        url: Icon,
-                                        scaledSize: new window.google.maps.Size(size, size),
-                                        origin: new window.google.maps.Point(0, 0),
-                                        anchor: new window.google.maps.Point(16, 32),
-                                    }}
-                                />
-                            )
-                        }
+                        return (
+                            <Marker
+                                key={map.state_code}
+                                position={{
+                                    lat: +map.latitude,
+                                    lng: +map.longitude
+                                }}
+                                title={`${map.name} -  ${map.count}`}
+                                icon={{
+                                    url: Icon,
+                                    scaledSize: new window.google.maps.Size(size, size),
+                                    origin: new window.google.maps.Point(0, 0),
+                                    anchor: new window.google.maps.Point(16, 32),
+                                }}
+                            />
+                        )
 
                     })}
                 </GoogleMap>
@@ -104,4 +95,4 @@ function Map() {
     )
 }
 
-export default React.memo(Map)
+export default memo(Map)
