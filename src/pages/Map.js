@@ -70,8 +70,15 @@ function Map() {
                 >
                     {mapData.map(map => {
                         const percent = (map.count * 100) / maxNumber
-                        const size = percent * (maxSize - minSize) / 100
-                        if(size < maxSize && size > minSize){
+                        let size;
+                        if(maxNumber === map.count){
+                            size = maxSize
+                        }else if(minNumber === map.count){
+                            size = minSize
+                        }else{
+                            size = percent * (maxSize - minSize) / 100
+                        }
+                        if(size <= maxSize && size >= minSize){
                             return (
                                 <Marker
                                     key={map.state_code}
