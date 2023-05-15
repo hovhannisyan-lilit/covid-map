@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.header-section {
+    z-index: 999;
+    position: relative;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.container {
+    width: 100%;
+    padding: 10px 15px;
+}
+.primary-menu{
+    display: flex;
+    justify-content: space-between;
+}
+.main-area{
+    width: 300px;
+}
