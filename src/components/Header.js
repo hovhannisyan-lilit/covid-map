@@ -26,8 +26,6 @@ function Header(props) {
             query.search = "positive";
             navigate(`?${qs.stringify(query)}`, { replace: true });
         }
-
-
     }, [query.search]);
 
     return (
